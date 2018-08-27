@@ -14,7 +14,9 @@ class JobController extends Controller
      */
     public function index()
     {
-        //
+        $jobs = Job::with(['tasks.user:name','tasks.role:name'])->get();
+
+        return view('jobs.index', compact('jobs'));
     }
 
     /**
@@ -24,7 +26,7 @@ class JobController extends Controller
      */
     public function create()
     {
-        //
+        return view('jobs.create');
     }
 
     /**
@@ -35,7 +37,14 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        $job = Job::create($data);
+
+        return redirect('/jobs/'.$job->id);
     }
 
     /**
@@ -46,7 +55,9 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        //
+        $users = \App\User::all();
+        $roles = \App\Role::all();
+        return view('jobs.show', compact(['job','users','roles']));
     }
 
     /**
@@ -57,7 +68,7 @@ class JobController extends Controller
      */
     public function edit(Job $job)
     {
-        //
+        return view('jobs.edit', compact('job'));
     }
 
     /**
@@ -69,7 +80,14 @@ class JobController extends Controller
      */
     public function update(Request $request, Job $job)
     {
-        //
+        $data = $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        $job->update($data);
+
+        return redirect('/jobs/'.$job->id);
     }
 
     /**
@@ -80,6 +98,9 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
-        //
+        $job->tasks()->delete();
+        $job->delete();
+
+        return redirect('/jobs');
     }
 }

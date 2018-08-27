@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Job;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -31,11 +32,23 @@ class TaskController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Job  $job
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Job $job)
     {
-        //
+        $this->validate($request, [
+            'user' => 'required',
+            'role' => 'required'
+        ]);
+        $task = new Task;
+        $task->job()->associate($job);
+        $task->user()->associate($request->user);
+        $task->role()->associate($request->role);
+        $task->save();
+
+        
+        return redirect('/jobs/'.$job->id);
     }
 
     /**
@@ -64,22 +77,39 @@ class TaskController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Job  $job
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, Job $job, Task $task)
     {
-        //
+        $this->validate($request, [
+            'user' => 'required',
+            'role' => 'required'
+        ]);
+
+        $user = $request->user;
+        $role = $request->role;
+
+        $task->user()->associate($user);
+        $task->role()->associate($role);
+        $task->save();
+
+        
+        return redirect('/jobs/'.$task->job->id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \App\Job  $job
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy(Job $job, Task $task)
     {
-        //
+        $task->delete();
+
+        return redirect('/jobs/'.$task->job->id);
     }
 }

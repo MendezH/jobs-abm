@@ -18,3 +18,18 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/jobs', 'JobController@index');
+
+
+
+$router->group(['middleware' => 'auth'], function () use ($router) {
+
+    Route::resource('roles', 'RoleController');
+    Route::resource('jobs', 'JobController')->except(['index']);
+    Route::resource('jobs.tasks', 'TaskController')->only([
+        'store', 'update', 'destroy'
+    ]);
+
+});
+

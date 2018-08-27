@@ -49,6 +49,12 @@
                 font-size: 84px;
             }
 
+            .title a {
+                color: #636b6f;
+                padding: 0 25px;
+                text-decoration: none;
+            }
+
             .links > a {
                 color: #636b6f;
                 padding: 0 25px;
@@ -69,7 +75,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}">Jobs</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>
@@ -79,11 +85,12 @@
 
             <div class="content">
                 <div class="title">
-                    Jobs ABM
+                    <a href="{{ url('/jobs') }}">
+                        Jobs ABM
+                    </a>
                 </div>
-
-                
             </div>
+
         </div>
     </body>
 </html>
